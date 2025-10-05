@@ -1,0 +1,195 @@
+import { useEffect, useMemo, useRef } from "react";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import {
+  setSearch,
+  setIndustry,
+  setLocation,
+  setSort,
+} from "../../features/companies/companiesSlice";
+import { SORT_OPTIONS, VIEW_MODES } from "../../constants";
+import {
+  ArrowDownAZIcon,
+  Factory,
+  Grid2X2,
+  MapPin,
+  Search,
+  Table2,
+} from "lucide-react";
+import { SelectField } from "../Select";
+
+interface FiltersProps {
+  onFilterChange: () => void;
+  viewMode: (typeof VIEW_MODES)[number];
+  handleViewMode: (mode: (typeof VIEW_MODES)[number]) => void;
+}
+
+export default function Filters({
+  onFilterChange,
+  viewMode,
+  handleViewMode,
+}: FiltersProps) {
+  const dispatch = useAppDispatch();
+  const { items, filters, sort } = useAppSelector((s) => s.companies);
+  const searchRef = useRef<HTMLInputElement>(null);
+
+  const industries = useMemo(
+    () => Array.from(new Set(items.map((c) => c.industry))),
+    [items]
+  );
+  const locations = useMemo(
+    () => Array.from(new Set(items.map((c) => c.location))),
+    [items]
+  );
+
+  const filtersApplied = useMemo(
+    () =>
+      (filters.industry && filters.industry !== "") ||
+      (filters.location && filters.location !== "") ||
+      (!!sort && sort.column && sort.direction),
+    [filters, sort]
+  );
+
+  // ✅ 1️⃣ Autofocus
+  useEffect(() => {
+    searchRef.current?.focus();
+  }, []);
+
+  // ✅ 2️⃣ Read from URL on first load
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+
+    const search = params.get("search") || "";
+    const industry = params.get("industry") || "";
+    const location = params.get("location") || "";
+    const sortParam = params.get("sort");
+
+    if (search) dispatch(setSearch(search));
+    if (industry) dispatch(setIndustry(industry));
+    if (location) dispatch(setLocation(location));
+
+    if (sortParam) {
+      const [col, dir] = sortParam.split("|");
+      dispatch(
+        setSort({ column: col as any, direction: dir as "asc" | "desc" })
+      );
+    }
+  }, [dispatch]);
+
+  // ✅ 3️⃣ Sync Redux → URL
+  useEffect(() => {
+    const params = new URLSearchParams();
+
+    if (filters.search) params.set("search", filters.search);
+    if (filters.industry) params.set("industry", filters.industry);
+    if (filters.location) params.set("location", filters.location);
+    if (sort?.column && sort.direction)
+      params.set("sort", `${sort.column}|${sort.direction}`);
+
+    const query = params.toString();
+    const url = query ? `?${query}` : window.location.pathname;
+
+    window.history.replaceState({}, "", url);
+  }, [filters, sort]);
+
+  const handleInput = (fn: any, value: string) => {
+    dispatch(fn(value));
+    onFilterChange();
+  };
+
+  return (
+    <div className="w-full">
+      <div className="flex justify-between items-center mb-4 w-full">
+        <div>
+          <h5 className="text-xl text-gray-800 font-semibold">Companies</h5>
+          <p className="text-sm text-gray-600 font-normal">
+            List of companies you have access to
+          </p>
+        </div>
+        <div className="max-w-sm relative flex items-center border border-gray-300 rounded-md px-2 py-1.5 bg-white gap-2 w-full md:w-auto hover:border-blue-400 focus-within:border-blue-700 focus-within:ring-2 focus-within:ring-blue-400 focus-within:outline-none transition-all">
+          <Search size={16} className="text-gray-600" />
+          <input
+            ref={searchRef}
+            type="text"
+            placeholder="Search..."
+            value={filters.search}
+            onChange={(e) => handleInput(setSearch, e.target.value)}
+            className="border-0 text-gray-700 focus:ring-0 focus:outline-0 ml-2 w-full text-sm placeholder:text-sm"
+          />
+        </div>
+      </div>
+      <div className="flex justify-between items-center mb-4 w-full">
+        <div className="flex flex-col md:flex-row gap-4">
+          <SelectField
+            icon={<Factory size={16} className="text-gray-600" />}
+            value={filters.industry}
+            options={industries}
+            placeholder="All Industries"
+            onChange={(v) => handleInput(setIndustry, v)}
+          />
+          <SelectField
+            icon={<MapPin size={16} className="text-gray-600" />}
+            value={filters.location}
+            options={locations}
+            placeholder="All Locations"
+            onChange={(v) => handleInput(setLocation, v)}
+          />
+          <SelectField
+            icon={<ArrowDownAZIcon size={16} className="text-gray-600" />}
+            value={
+              sort?.column && sort.direction
+                ? `${String(sort.column)}|${sort.direction}`
+                : ""
+            }
+            options={SORT_OPTIONS}
+            placeholder="Sort by"
+            onChange={(val) => {
+              if (!val) {
+                dispatch(setSort(null));
+                onFilterChange();
+                return;
+              }
+              const [column, direction] = val.split("|");
+              dispatch(
+                setSort({
+                  column: column as any,
+                  direction: direction as "asc" | "desc",
+                })
+              );
+              onFilterChange();
+            }}
+          />
+          {filtersApplied && (
+            <button
+              onClick={() => {
+                dispatch(setSearch(""));
+                dispatch(setIndustry(""));
+                dispatch(setLocation(""));
+                dispatch(setSort(null));
+                onFilterChange();
+              }}
+              className="text-sm text-blue-700 hover:underline transition cursor-pointer"
+            >
+              Reset
+            </button>
+          )}
+        </div>
+        <div className="border-gray-400 border rounded-md overflow-hidden flex">
+          {VIEW_MODES.map((mode) => (
+            <button
+              key={mode}
+              className={`p-2 text-xs flex gap-1 cursor-pointer ${
+                viewMode === mode
+                  ? "bg-blue-500 text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              }`}
+              onClick={() => handleViewMode(mode)}
+            >
+              {mode === "cards" ? <Grid2X2 size={16} /> : <Table2 size={16} />}
+              {mode === "cards" ? "Cards" : "Table"}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
