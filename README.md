@@ -1,6 +1,13 @@
-# Companies Directory – Frontend Assignment
+# Companies Directory
 
-A responsive **React.js** application to display and filter company data with table and card views. Built as a frontend assessment for Frontlines Media.
+A responsive **React.js** application to display and filter company data with table and card views. Built for Frontlines Media.
+
+<div style="display: flex; gap: 10px;">
+  <img src="https://github.com/user-attachments/assets/3fdfb847-8c00-4da3-aea3-fc6ab65d6bd6" width="49%" alt="App Screenshot 1" />
+  <img src="https://github.com/user-attachments/assets/123f256f-a015-4455-8a63-3c628d415193" width="49%" alt="App Screenshot 2" />
+</div>
+
+
 
 ---
 
