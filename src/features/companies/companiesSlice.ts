@@ -1,4 +1,8 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import {
+  createSlice,
+  createAsyncThunk,
+  type PayloadAction,
+} from "@reduxjs/toolkit";
 import axios from "axios";
 import type { CompaniesState, Company } from "../../types/company";
 
@@ -23,6 +27,7 @@ const initialState: CompaniesState = {
     location: "",
   },
   sort: { column: null, direction: null },
+  loadMode: "pagination",
 };
 
 const companiesSlice = createSlice({
@@ -46,6 +51,9 @@ const companiesSlice = createSlice({
     ) {
       state.sort = action.payload || { column: null, direction: null };
     },
+    setLoadMode: (state, action: PayloadAction<"pagination" | "infinite">) => {
+      state.loadMode = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -64,6 +72,6 @@ const companiesSlice = createSlice({
   },
 });
 
-export const { setSearch, setIndustry, setLocation, setSort } =
+export const { setSearch, setIndustry, setLocation, setSort, setLoadMode } =
   companiesSlice.actions;
 export default companiesSlice.reducer;

@@ -5,17 +5,17 @@ import {
   setIndustry,
   setLocation,
   setSort,
+  setLoadMode,
 } from "../../features/companies/companiesSlice";
-import { SORT_OPTIONS, VIEW_MODES } from "../../constants";
 import {
-  ArrowDownAZIcon,
-  Building2,
-  Grid2X2,
-  MapPin,
-  Search,
-  Table2,
-} from "lucide-react";
+  loadModeOptions,
+  SORT_OPTIONS,
+  VIEW_MODES,
+  viewModeOptions,
+} from "../../constants";
+import { ArrowDownAZIcon, Building2, MapPin, Search } from "lucide-react";
 import { SelectField } from "../Select";
+import { ToggleButtonGroup } from "../ToggleButton";
 
 interface FiltersProps {
   onFilterChange: () => void;
@@ -29,7 +29,7 @@ export default function Filters({
   handleViewMode,
 }: FiltersProps) {
   const dispatch = useAppDispatch();
-  const { items, filters, sort } = useAppSelector((s) => s.companies);
+  const { items, filters, sort, loadMode } = useAppSelector((s) => s.companies);
   const searchRef = useRef<HTMLInputElement>(null);
 
   const industries = useMemo(
@@ -173,21 +173,20 @@ export default function Filters({
             </button>
           )}
         </div>
-        <div className="border-gray-400 border rounded-md overflow-hidden flex">
-          {VIEW_MODES.map((mode) => (
-            <button
-              key={mode}
-              className={`p-2 text-xs flex gap-1 cursor-pointer ${
-                viewMode === mode
-                  ? "bg-blue-500 text-white"
-                  : "bg-white text-gray-700 hover:bg-gray-100"
-              }`}
-              onClick={() => handleViewMode(mode)}
-            >
-              {mode === "cards" ? <Grid2X2 size={16} /> : <Table2 size={16} />}
-              {mode === "cards" ? "Cards" : "Table"}
-            </button>
-          ))}
+
+        <div className="inline-flex gap-2">
+          <ToggleButtonGroup
+            options={viewModeOptions}
+            selected={viewMode}
+            onChange={handleViewMode}
+          />
+          <ToggleButtonGroup
+            options={loadModeOptions}
+            selected={loadMode}
+            onChange={(mode) =>
+              dispatch(setLoadMode(mode as "pagination" | "infinite"))
+            }
+          />
         </div>
       </div>
     </div>

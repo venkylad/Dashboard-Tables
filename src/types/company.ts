@@ -33,6 +33,7 @@ export interface CompaniesState {
     location: string;
   };
   sort: SortState;
+  loadMode: "pagination" | "infinite";
 }
 
 export interface TableColumn<T> extends BaseTableColumn<T> {
