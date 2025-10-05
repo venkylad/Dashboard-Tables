@@ -97,3 +97,23 @@ npx json-server --watch db.json --port 5000
 npm run dev
 ```
 Open http://localhost:5173 in your browser.
+
+## ⚙️ Scripts
+
+- `npm run dev` – Run development server
+- `npm run build` – Build production-ready app
+- `npm run preview` – Preview production build
+
+## 📄 Notes
+
+- Filters, sort, and pagination are saved in URL query params
+- Table supports rows per page selection and pagination controls
+- Cards and table views can be toggled dynamically
+- All external links (website, email, phone) are clickable
+
+## 🎨 UI / Styling
+
+- Tailwind CSS for utility-first styling
+- Hover effects and shadows for card interactivity
+- Icons used from Lucide React
+- Responsive layouts for mobile and desktop
