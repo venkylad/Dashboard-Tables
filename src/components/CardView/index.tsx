@@ -5,6 +5,7 @@ import { ROWS_PER_PAGE_OPTIONS } from "../../constants";
 import { SelectField } from "../Select";
 import Card from "./Card";
 import { useAppSelector } from "../../hooks";
+import { OctagonAlert } from "lucide-react";
 
 interface Props {
   data: Company[];
@@ -48,6 +49,15 @@ export default function CardView({ data, resetKey }: Props) {
     // load next chunk
     setItemsCount((prev) => Math.min(prev + rowsPerPage, data.length));
   };
+
+  if (itemsToShow?.length === 0) {
+    return (
+      <div className="p-16 text-2xl text-gray-700 font-semibold flex flex-col items-center justify-center gap-4">
+        <OctagonAlert size={60} className="text-red-600" />
+        <p>No companies found.</p>
+      </div>
+    );
+  }
 
   return (
     <div>

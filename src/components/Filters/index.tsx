@@ -172,7 +172,8 @@ export default function Filters({ onFilterChange }: FiltersProps) {
                 onFilterChange();
                 return;
               }
-              const [column, direction] = val.split("|");
+              const [column, direction] = val.split("-");
+              console.log(val);
               dispatch(
                 setSort({
                   column: column as any,
