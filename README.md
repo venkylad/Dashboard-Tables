@@ -78,8 +78,8 @@ src/
 
 ### 1. Clone the repository
 ```bash
-git clone <your-repo-url>
-cd companies-directory
+git clone https://github.com/venkylad/Dashboard-Tables.git
+cd Dashboard-Tables
 ```
 
 ### 2. Install dependencies
