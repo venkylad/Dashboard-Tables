@@ -108,7 +108,9 @@ export default function CardView({ data, resetKey }: Props) {
             </div>
 
             <div className="flex items-center gap-2">
-              <label className="text-xs text-gray-600">Rows per page:</label>
+              <label className="text-xs text-gray-600">
+                Companies per page:
+              </label>
               <SelectField
                 value={String(rowsPerPage)}
                 options={ROWS_PER_PAGE_OPTIONS.map((r) => r.toString())}

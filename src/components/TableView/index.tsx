@@ -95,7 +95,7 @@ export default function TableView({ data, resetKey }: Props) {
   ) : (
     <DataTable
       columns={companiesColumn}
-      data={itemsToShow}
+      data={data}
       pagination
       paginationPerPage={tableRowsPerPage}
       paginationRowsPerPageOptions={ROWS_PER_PAGE_OPTIONS}
@@ -118,6 +118,7 @@ export default function TableView({ data, resetKey }: Props) {
         setTablePage(1);
       }}
       highlightOnHover
+      striped
       customStyles={customStyles}
     />
   );

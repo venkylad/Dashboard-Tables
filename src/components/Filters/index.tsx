@@ -161,7 +161,7 @@ export default function Filters({ onFilterChange }: FiltersProps) {
             icon={<ArrowDownAZIcon size={16} className="text-gray-600" />}
             value={
               sort?.column && sort.direction
-                ? `${String(sort.column)}|${sort.direction}`
+                ? `${String(sort.column)}-${sort.direction}`
                 : ""
             }
             options={SORT_OPTIONS}
