@@ -26,7 +26,7 @@ export default function TableView({ data, resetKey }: Props) {
   return (
     <DataTable
       columns={companiesColumn}
-      data={data} // pass full filtered data; table slices internally
+      data={data}
       pagination
       paginationPerPage={tableRowsPerPage}
       paginationRowsPerPageOptions={ROWS_PER_PAGE_OPTIONS}
