@@ -1,6 +1,6 @@
 import {
+  Building2,
   ExternalLink,
-  Factory,
   Mail,
   MapPin,
   MessageSquareCode,
@@ -28,7 +28,8 @@ function Card({ company }: { company: Company }) {
             {company.name}
           </h2>
           <p className="text-sm text-gray-500 mt-1 truncate flex items-center gap-1">
-            <Factory size={14} className="text-gray-600" /> {company.industry}
+            <Building2 size={14} className="text-gray-600" /> {company.industry}{" "}
+            &nbsp;|&nbsp;
             <MapPin size={14} className="text-gray-600" />
             {company.location}
           </p>

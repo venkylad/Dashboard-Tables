@@ -9,7 +9,7 @@ import {
 import { SORT_OPTIONS, VIEW_MODES } from "../../constants";
 import {
   ArrowDownAZIcon,
-  Factory,
+  Building2,
   Grid2X2,
   MapPin,
   Search,
@@ -120,7 +120,7 @@ export default function Filters({
       <div className="flex justify-between items-center mb-4 w-full">
         <div className="flex flex-col md:flex-row gap-4">
           <SelectField
-            icon={<Factory size={16} className="text-gray-600" />}
+            icon={<Building2 size={16} className="text-gray-600" />}
             value={filters.industry}
             options={industries}
             placeholder="All Industries"
