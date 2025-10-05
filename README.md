@@ -103,6 +103,10 @@ npx json-server --watch db.json --port 5000
 ```bash
 npm run dev
 ```
+### 5. Run both frontend and backend using the below command
+```bash
+npm start
+```
 Open http://localhost:5173 in your browser.
 
 ## ⚙️ Scripts
