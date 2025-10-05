@@ -3,28 +3,20 @@ import { useAppDispatch, useAppSelector } from "./hooks";
 import { fetchCompanies } from "./features/companies/companiesSlice";
 import Filters from "./components/Filters";
 import { filterAndSortCompanies } from "./features/companies/filterSort";
-import { VIEW_MODES } from "./constants";
 import TableView from "./components/TableView";
 import CardView from "./components/CardView";
 import Navbar from "./components/Navbar";
 
 export default function App() {
   const dispatch = useAppDispatch();
-  const { items, status, error, filters, sort } = useAppSelector(
+  const { items, status, error, filters, sort, viewMode } = useAppSelector(
     (s) => s.companies
   );
-
-  const [viewMode, setViewMode] =
-    useState<(typeof VIEW_MODES)[number]>("cards");
 
   const [resetKey, setResetKey] = useState(0);
 
   const handleFilterChange = () => {
     setResetKey((k) => k + 1);
-  };
-
-  const handleViewMode = (mode: (typeof VIEW_MODES)[number]) => {
-    setViewMode(mode);
   };
 
   useEffect(() => {
@@ -48,11 +40,7 @@ export default function App() {
       <Navbar />
       <div className="max-w-7xl mx-auto px-4">
         <div>
-          <Filters
-            onFilterChange={handleFilterChange}
-            viewMode={viewMode}
-            handleViewMode={handleViewMode}
-          />
+          <Filters onFilterChange={handleFilterChange} />
         </div>
 
         {viewMode === "table" ? (

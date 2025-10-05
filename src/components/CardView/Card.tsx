@@ -76,7 +76,7 @@ function Card({ company }: { company: Company }) {
           <label className="font-semibold">About</label>
         </p>
         <span
-          className="text-sm text-gray-600 font-normal line-clamp-3 truncate"
+          className="text-sm text-gray-600 font-normal line-clamp-3"
           title={company.description}
         >
           {company.description}

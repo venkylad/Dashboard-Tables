@@ -1,4 +1,5 @@
 import { type TableColumn as BaseTableColumn } from "react-data-table-component";
+import type { LOAD_MODES, VIEW_MODES } from "../constants";
 
 export interface Company {
   id: number;
@@ -33,9 +34,13 @@ export interface CompaniesState {
     location: string;
   };
   sort: SortState;
-  loadMode: "pagination" | "infinite";
+  loadMode?: LoadMode;
+  viewMode?: ViewMode;
 }
 
 export interface TableColumn<T> extends BaseTableColumn<T> {
   sortKey?: keyof T;
 }
+
+export type ViewMode = (typeof VIEW_MODES)[number];
+export type LoadMode = (typeof LOAD_MODES)[number];

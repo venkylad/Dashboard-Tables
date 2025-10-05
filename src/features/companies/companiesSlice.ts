@@ -4,7 +4,7 @@ import {
   type PayloadAction,
 } from "@reduxjs/toolkit";
 import axios from "axios";
-import type { CompaniesState, Company } from "../../types/company";
+import type { CompaniesState, Company, ViewMode } from "../../types/company";
 
 const API_URL =
   import.meta.env.VITE_API_URL ?? "http://localhost:5000/companies";
@@ -27,7 +27,6 @@ const initialState: CompaniesState = {
     location: "",
   },
   sort: { column: null, direction: null },
-  loadMode: "pagination",
 };
 
 const companiesSlice = createSlice({
@@ -54,6 +53,9 @@ const companiesSlice = createSlice({
     setLoadMode: (state, action: PayloadAction<"pagination" | "infinite">) => {
       state.loadMode = action.payload;
     },
+    setViewMode(state, action: PayloadAction<ViewMode>) {
+      state.viewMode = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -72,6 +74,12 @@ const companiesSlice = createSlice({
   },
 });
 
-export const { setSearch, setIndustry, setLocation, setSort, setLoadMode } =
-  companiesSlice.actions;
+export const {
+  setSearch,
+  setIndustry,
+  setLocation,
+  setSort,
+  setLoadMode,
+  setViewMode,
+} = companiesSlice.actions;
 export default companiesSlice.reducer;

@@ -6,30 +6,36 @@ import {
   setLocation,
   setSort,
   setLoadMode,
+  setViewMode,
 } from "../../features/companies/companiesSlice";
 import {
-  loadModeOptions,
   SORT_OPTIONS,
   VIEW_MODES,
+  LOAD_MODES,
   viewModeOptions,
+  loadModeOptions,
 } from "../../constants";
-import { ArrowDownAZIcon, Building2, MapPin, Search } from "lucide-react";
+import {
+  ArrowDownAZIcon,
+  Building2,
+  Grid2X2,
+  MapPin,
+  Search,
+  Table2,
+} from "lucide-react";
 import { SelectField } from "../Select";
+import type { LoadMode, ViewMode } from "../../types/company";
 import { ToggleButtonGroup } from "../ToggleButton";
 
 interface FiltersProps {
   onFilterChange: () => void;
-  viewMode: (typeof VIEW_MODES)[number];
-  handleViewMode: (mode: (typeof VIEW_MODES)[number]) => void;
 }
 
-export default function Filters({
-  onFilterChange,
-  viewMode,
-  handleViewMode,
-}: FiltersProps) {
+export default function Filters({ onFilterChange }: FiltersProps) {
   const dispatch = useAppDispatch();
-  const { items, filters, sort, loadMode } = useAppSelector((s) => s.companies);
+  const { items, filters, sort, loadMode, viewMode } = useAppSelector(
+    (s) => s.companies
+  );
   const searchRef = useRef<HTMLInputElement>(null);
 
   const industries = useMemo(
@@ -43,18 +49,19 @@ export default function Filters({
 
   const filtersApplied = useMemo(
     () =>
+      (filters.search && filters.search.trim() !== "") ||
       (filters.industry && filters.industry !== "") ||
       (filters.location && filters.location !== "") ||
       (!!sort && sort.column && sort.direction),
     [filters, sort]
   );
 
-  // ✅ 1️⃣ Autofocus
+  // Autofocus
   useEffect(() => {
     searchRef.current?.focus();
   }, []);
 
-  // ✅ 2️⃣ Read from URL on first load
+  // Read from URL on first load (includes view & load)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
 
@@ -62,6 +69,8 @@ export default function Filters({
     const industry = params.get("industry") || "";
     const location = params.get("location") || "";
     const sortParam = params.get("sort");
+    const viewParam = (params.get("view") || "") as ViewMode | "";
+    const loadParam = (params.get("load") || "") as LoadMode | "";
 
     if (search) dispatch(setSearch(search));
     if (industry) dispatch(setIndustry(industry));
@@ -73,9 +82,19 @@ export default function Filters({
         setSort({ column: col as any, direction: dir as "asc" | "desc" })
       );
     }
+
+    // view mode from url -> call parent handler (App owns viewMode state)
+    if (viewParam && (VIEW_MODES as readonly string[]).includes(viewParam)) {
+      dispatch(setViewMode(viewParam as ViewMode));
+    }
+
+    // load mode from url -> dispatch to redux
+    if (loadParam && (LOAD_MODES as readonly string[]).includes(loadParam)) {
+      dispatch(setLoadMode(loadParam as LoadMode));
+    }
   }, [dispatch]);
 
-  // ✅ 3️⃣ Sync Redux → URL
+  // Sync Redux & view -> URL
   useEffect(() => {
     const params = new URLSearchParams();
 
@@ -85,11 +104,15 @@ export default function Filters({
     if (sort?.column && sort.direction)
       params.set("sort", `${sort.column}|${sort.direction}`);
 
+    // persist view and load
+    if (viewMode) params.set("view", viewMode);
+    if (loadMode) params.set("load", loadMode);
+
     const query = params.toString();
     const url = query ? `?${query}` : window.location.pathname;
 
     window.history.replaceState({}, "", url);
-  }, [filters, sort]);
+  }, [filters, sort, viewMode, loadMode]);
 
   const handleInput = (fn: any, value: string) => {
     dispatch(fn(value));
@@ -117,6 +140,7 @@ export default function Filters({
           />
         </div>
       </div>
+
       <div className="flex justify-between items-center mb-4 w-full">
         <div className="flex flex-col md:flex-row gap-4">
           <SelectField
@@ -174,18 +198,17 @@ export default function Filters({
           )}
         </div>
 
-        <div className="inline-flex gap-2">
+        <div className="flex items-center gap-2">
           <ToggleButtonGroup
             options={viewModeOptions}
-            selected={viewMode}
-            onChange={handleViewMode}
+            selected={viewMode || "cards"}
+            onChange={(mode) => dispatch(setViewMode(mode))}
           />
+
           <ToggleButtonGroup
             options={loadModeOptions}
-            selected={loadMode}
-            onChange={(mode) =>
-              dispatch(setLoadMode(mode as "pagination" | "infinite"))
-            }
+            selected={loadMode || "pagination"}
+            onChange={(mode) => dispatch(setLoadMode(mode as LoadMode))}
           />
         </div>
       </div>
